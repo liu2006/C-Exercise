@@ -3,9 +3,9 @@
 #include <vector>
 void total_fee_message(double big_room_fee = 35, double small_room_fee = 25);
 
-double cal_room_fee(size_t room_num, size_t room_fee);
+double cal_room_fee(size_t, size_t);
 
-double room_fee_tax(double room_fee, double tax = 0.06);
+double room_fee_tax(double, double tax = 0.06);
 
 void fee_table();
 
