@@ -66,7 +66,7 @@ void select_serve() {
                   << "4.数据金字塔" << std::endl
                   << "退出程序[q/Q]\n请输入：";
         std::cin >> command;
-
+        std::cin.ignore(256, '\n');
         switch (command) {
         case '1':
             fee_table();
@@ -80,14 +80,13 @@ void select_serve() {
         case '4':
             test1_function();
             break;
-            break;
         case 'q':
         case 'Q':
             std::cout << "程序退出" << std::endl;
             break;
         default:
             std::cout << "请输入正确命令" << std::endl;
-            continue;
+            break;
         }
 
     } while (command != 'q' && command != 'Q');
@@ -142,12 +141,10 @@ void coding_tool() {
     while (parameter) {
         std::cout << "输入密码['q'键退出]：";
         getline(std::cin, user_input);
-
         if (user_input == "q" || user_input == "Q") {
             std::cout << "Program exit" << std::endl;
             break;
-        }
-        if (user_input != user_password) {
+        } else if (user_input != user_password) {
             std::cout << "Verify fail" << std::endl;
             continue;
         } else {
