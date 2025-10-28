@@ -18,11 +18,11 @@ void test1_function();
 void test2_function();
 
 void vec_test();
-void print_vec(const std::vector<double> &);
-void add_num(std::vector<double> &);
-void average_num(const std::vector<double> &);
-void small_num(const std::vector<double> &);
-void large_num(const std::vector<double> &);
+void print_vec(const std::vector<double> *);
+void add_num(std::vector<double> *);
+void average_num(const std::vector<double> *);
+void small_num(const std::vector<double> *);
+void large_num(const std::vector<double> *);
 
 int main() {
     select_serve();
@@ -151,7 +151,9 @@ void coding_tool() {
             std::cout << "\n验证成功" << std::endl;
             do {
                 std::string plaintext{};
+                std::string *plaintext_ptr{&plaintext};
                 std::string ciphertext{};
+                std::string *ciphertext_ptr{&ciphertext};
                 std::string letter{};
                 std::cout << "-----------------------------------------"
                           << std::endl
@@ -163,23 +165,24 @@ void coding_tool() {
                           << std::endl
                           << "Enter：";
                 getline(std::cin, letter);
+
                 if (letter == "1") {
                     std::cout << "请输入需要加密的信息: ";
                     getline(std::cin, plaintext);
-                    if (plaintext.length() == 0) {
+                    if ((*plaintext_ptr).length() == 0) {
                         std::cout << "输入为空请重试" << std::endl;
                         continue;
                     } else {
-                        for (auto s : plaintext) {
+                        for (auto s : *plaintext_ptr) {
                             size_t pos = alphabet.find(s);
                             if (pos != std::string::npos)
-                                ciphertext += key.at(pos);
+                                *ciphertext_ptr += key.at(pos);
                             else
-                                ciphertext += "#";
+                                *ciphertext_ptr += "#";
                         }
                         std::cout << "加密成功" << std::endl
                                   << "密钥是: \n"
-                                  << ciphertext << std::endl;
+                                  << *ciphertext_ptr << std::endl;
                     }
                     --parameter;
                     break;
@@ -187,22 +190,22 @@ void coding_tool() {
                 } else if (letter == "2") {
                     std::string decrypt_information{};
                     std::cout << "请输入需要解密的信息: ";
-                    getline(std::cin, ciphertext);
-                    if (ciphertext.length() == 0) {
+                    getline(std::cin, *ciphertext_ptr);
+                    if ((*ciphertext_ptr).length() == 0) {
                         std::cout << "输入为空请重试" << std::endl;
                         continue;
                     } else {
-                        for (auto s : ciphertext) {
+                        for (auto s : *ciphertext_ptr) {
                             size_t pos = key.find(s);
                             if (pos != std::string::npos) {
-                                plaintext += alphabet.at(pos);
+                                *plaintext_ptr += alphabet.at(pos);
                             } else {
-                                plaintext += " ";
+                                *plaintext_ptr += " ";
                             }
                         }
                         std::cout << "解密成功" << std::endl
                                   << "结果是: \n"
-                                  << plaintext << std::endl;
+                                  << *plaintext_ptr << std::endl;
                     }
                     --parameter;
                     break;
@@ -408,9 +411,11 @@ void test2_function() {
 }
 void vec_test() {
 
-    static std::vector<double> array{1, 43, 44};
+    static std::vector<double> array{};
 
     char user_input{};
+    char *input_ptr{&user_input};
+    std::vector<double> *array_ptr{&array};
     do {
         std::cout << "-------------------------------------------" << std::endl
                   << "Select_serve" << std::endl
@@ -423,39 +428,41 @@ void vec_test() {
                   << "Enter: ";
 
         std::cin >> user_input;
-        switch (user_input) {
+
+        switch (*input_ptr) {
         case 'q':
         case 'Q':
             std::cout << "Program Exit" << std::endl;
             break;
         case 'p':
         case 'P':
-            print_vec(array);
+            print_vec(array_ptr);
             break;
         case 'a':
         case 'A':
-            add_num(array);
+            add_num(array_ptr);
             break;
         case 'M':
         case 'm':
-            average_num(array);
+            average_num(array_ptr);
             break;
         case 's':
         case 'S':
-            small_num(array);
+            small_num(array_ptr);
             break;
         case 'l':
         case 'L':
-            large_num(array);
+            large_num(array_ptr);
             break;
         default:
             std::cout << "输入无效" << std::endl;
+            break;
         }
     } while (user_input != 'q' && user_input != 'Q');
 }
 
-bool jodge_null(const std::vector<double> &array) {
-    if (array.size() == 0) {
+bool jodge_null(const std::vector<double> *array_ptr) {
+    if ((*array_ptr).size() == 0) {
         std::cout << "[] - 列表为空" << std::endl;
         return false;
     } else {
@@ -463,37 +470,37 @@ bool jodge_null(const std::vector<double> &array) {
     }
 }
 
-void print_vec(const std::vector<double> &array) {
-    if (jodge_null(array)) {
+void print_vec(const std::vector<double> *array_ptr) {
+    if (jodge_null(array_ptr)) {
         std::cout << "[ ";
-        for (auto n : array)
+        for (auto n : *array_ptr)
             std::cout << n << " ";
         std::cout << "]" << std::endl;
     }
 }
 
-void add_num(std::vector<double> &array) {
+void add_num(std::vector<double> *array_ptr) {
     double num{};
     std::cout << "请输入要添加的数字：";
     std::cin >> num;
-    array.push_back(num);
+    (*array_ptr).push_back(num);
     std::cout << "更新之后的结果：";
-    print_vec(array);
+    print_vec(array_ptr);
 }
 
-void average_num(const std::vector<double> &array) {
-    if (jodge_null(array)) {
+void average_num(const std::vector<double> *array_ptr) {
+    if (jodge_null(array_ptr)) {
         double result{};
-        for (auto num : array) {
+        for (auto num : *array_ptr) {
             result += num;
         }
-        std::cout << "平均值为：" << result / array.size() << std::endl;
+        std::cout << "平均值为：" << result / (*array_ptr).size() << std::endl;
     }
 }
-void small_num(const std::vector<double> &array) {
-    if (jodge_null(array)) {
-        double result{array.at(0)};
-        for (auto num : array) {
+void small_num(const std::vector<double> *array_ptr) {
+    if (jodge_null(array_ptr)) {
+        double result{(*array_ptr).at(0)};
+        for (auto num : *array_ptr) {
             if (num < result) {
                 result = num;
             }
@@ -502,10 +509,10 @@ void small_num(const std::vector<double> &array) {
     }
 }
 
-void large_num(const std::vector<double> &array) {
-    if (jodge_null(array)) {
-        double result{array.at(0)};
-        for (auto num : array) {
+void large_num(const std::vector<double> *array_ptr) {
+    if (jodge_null(array_ptr)) {
+        double result{(*array_ptr).at(0)};
+        for (auto num : (*array_ptr)) {
             if (result < num) {
                 result = num;
             }
