@@ -6,4 +6,3 @@ C++ Exercise
 <img width="854" height="666" alt="屏幕截图_20251028_110631" src="https://github.com/user-attachments/assets/bd950a79-e7ea-4336-9c62-0e5425e820a5" />
 <img width="1147" height="816" alt="屏幕截图_20251028_111137" src="https://github.com/user-attachments/assets/63f6c5cb-aade-4def-85e9-b9fcd5b64540" />
 
-<img width="1147" height="816" alt="屏幕截图_20251028_111137" src="https://github.com/user-attachments/assets/eaab4c2d-a082-42d4-b540-e2b83fc207ce" />
