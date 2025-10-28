@@ -411,7 +411,7 @@ void test2_function() {
 }
 void vec_test() {
 
-    static std::vector<double> array{};
+    static std::vector<double> array{1, 43, 44};
 
     char user_input{};
     do {
@@ -451,6 +451,8 @@ void vec_test() {
         case 'L':
             large_num(array);
             break;
+        default:
+            std::cout << "输入无效" << std::endl;
         }
     } while (user_input != 'q' && user_input != 'Q');
 }
