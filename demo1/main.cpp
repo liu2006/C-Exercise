@@ -7,6 +7,11 @@ double cal_room_fee(size_t, size_t);
 
 double room_fee_tax(double, double tax = 0.06);
 
+void decrypt_information(const std::string *, const std::string *,
+                         const std::string *);
+
+void encrypt_information(const std::string *, const std::string *,
+                         const std::string *);
 void fee_table();
 
 void select_serve();
@@ -14,8 +19,6 @@ void select_serve();
 void coding_tool();
 
 void test1_function();
-
-void test2_function();
 
 void vec_test();
 void print_vec(const std::vector<double> *);
@@ -57,16 +60,19 @@ void total_fee_message(double big_room_fee, double small_room_fee) {
 }
 void select_serve() {
     char command{};
+    char *command_ptr{&command};
     do {
-        std::cout << "请选择服务" << std::endl
-                  << "---------------------------------------" << std::endl
+        std::cout << "---------------------------------------" << std::endl
+                  << "请选择服务" << std::endl
                   << "1.计算房间清理费用工具" << std::endl
                   << "2.数组测试" << std::endl
                   << "3.数据加密" << std::endl
                   << "4.数据金字塔" << std::endl
-                  << "退出程序[q/Q]\n请输入：";
+                  << "[q/Q] 退出程序" << std::endl
+                  << "---------------------------------------" << std::endl
+                  << "Enter: ";
         std::cin >> command;
-        switch (command) {
+        switch (*command_ptr) {
         case '1':
             fee_table();
             break;
@@ -122,6 +128,43 @@ void fee_table() {
     } while (letter != 'q' && letter != 'Q');
 }
 
+void encrypt_information(const std::string *information_ptr,
+                         const std::string *alphabet, const std::string *key) {
+    if ((*information_ptr).length() == 0) {
+        std::cout << "输入为空请重试" << std::endl;
+    } else {
+        std::string result{};
+        for (auto s : *information_ptr) {
+            size_t pos = (*alphabet).find(s);
+            if (pos != std::string::npos) {
+                result += (*key).at(pos);
+            } else
+                result += "#";
+        }
+        std::cout << "密钥：" << std::endl << result << std::endl << std::endl;
+    }
+}
+void decrypt_information(const std::string *information_ptr,
+                         const std::string *key_ptr,
+                         const std::string *alphabet_ptr) {
+
+    if ((*information_ptr).length() == 0) {
+        std::cout << "输入为空请重试" << std::endl;
+    } else {
+        std::string result{};
+        for (auto s : *information_ptr) {
+            size_t pos = (*key_ptr).find(s);
+            if (pos != std::string::npos) {
+                result += (*alphabet_ptr).at(pos);
+            } else {
+                result += " ";
+            }
+        }
+        std::cout << "解密成功: " << std::endl
+                  << result << std::endl
+                  << std::endl;
+    }
+}
 void coding_tool() {
 
     const std::string alphabet{
@@ -130,290 +173,89 @@ void coding_tool() {
         "YHNUJMswq765AQZWSX0EazbvfrVTGB98IKOLPploikujmnhytg4321edcxDCRF"};
     const std::string user_password{"520"};
 
+    const std::string *alphabet_ptr{&alphabet};
+    const std::string *key_ptr{&key};
     // if (alphabet.length() == key.length()) {
     //     std::cout << alphabet.length() << std::endl;
     // }
+    char letter{};
 
-    std::string user_input{};
-    unsigned parameter{1};
+    do {
+        std::string plaintext{};
+        std::string ciphertext{};
 
-    while (parameter) {
-        std::cout << "输入密码['q'键退出]：";
-        getline(std::cin, user_input);
-        if (user_input == "q" || user_input == "Q") {
+        const std::string *information_ptr{nullptr};
+
+        std::cout << "-----------------------------------------" << std::endl
+                  << "请选择服务" << std::endl
+                  << "1.加密信息" << std::endl
+                  << "2.解密信息" << std::endl
+                  << "['q'键退出]" << std::endl
+                  << "-------------------------------------------" << std::endl
+                  << "Enter：";
+        std::cin >> letter;
+        std::cin.ignore(10000, '\n');
+
+        switch (letter) {
+        case '1': {
+            std::cout << "请输入需要加密的信息: ";
+            getline(std::cin, plaintext);
+            information_ptr = &plaintext;
+            encrypt_information(information_ptr, alphabet_ptr, key_ptr);
+            break;
+        }
+        case '2': {
+            std::cout << "请输入密钥: ";
+            getline(std::cin, ciphertext);
+            information_ptr = &ciphertext;
+            decrypt_information(information_ptr, key_ptr, alphabet_ptr);
+            break;
+        }
+        case 'q':
+        case 'Q': {
             std::cout << "Program exit" << std::endl;
             break;
-        } else if (user_input != user_password) {
-            std::cout << "Verify fail" << std::endl;
-            continue;
-        } else {
-            std::cout << "\n验证成功" << std::endl;
-            do {
-                std::string plaintext{};
-                std::string *plaintext_ptr{&plaintext};
-                std::string ciphertext{};
-                std::string *ciphertext_ptr{&ciphertext};
-                std::string letter{};
-                std::cout << "-----------------------------------------"
-                          << std::endl
-                          << "请选择服务" << std::endl
-                          << "1.加密信息" << std::endl
-                          << "2.解密信息" << std::endl
-                          << "['q'键退出]" << std::endl
-                          << "-------------------------------------------"
-                          << std::endl
-                          << "Enter：";
-                getline(std::cin, letter);
-
-                if (letter == "1") {
-                    std::cout << "请输入需要加密的信息: ";
-                    getline(std::cin, plaintext);
-                    if (plaintext.length() == 0) {
-                        std::cout << "输入为空请重试" << std::endl;
-                        continue;
-                    } else {
-                        for (auto s : *plaintext_ptr) {
-                            size_t pos = alphabet.find(s);
-                            if (pos != std::string::npos)
-                                *ciphertext_ptr += key.at(pos);
-                            else
-                                *ciphertext_ptr += "#";
-                        }
-                        std::cout
-                            << "加密成功" << std::endl
-                            << "密钥是: \n"
-                            << *ciphertext_ptr << std::endl
-                            << "--------------------------------------------"
-                            << std::endl;
-                    }
-                    --parameter;
-                    break;
-
-                } else if (letter == "2") {
-                    std::string decrypt_information{};
-                    std::cout << "请输入需要解密的信息: ";
-                    getline(std::cin, ciphertext);
-                    if (ciphertext.length() == 0) {
-                        std::cout << "输入为空请重试" << std::endl;
-                        continue;
-                    } else {
-                        for (auto s : *ciphertext_ptr) {
-                            size_t pos = key.find(s);
-                            if (pos != std::string::npos) {
-                                *plaintext_ptr += alphabet.at(pos);
-                            } else {
-                                *plaintext_ptr += " ";
-                            }
-                        }
-                        std::cout
-                            << "解密成功" << std::endl
-                            << "结果是: \n"
-                            << *plaintext_ptr << std::endl
-                            << "--------------------------------------------"
-                            << std::endl;
-                    }
-                    --parameter;
-                    break;
-
-                } else if (letter == "q" || letter == "Q") {
-                    std::cout << "Program exit" << std::endl;
-                    --parameter;
-                    break;
-                } else {
-                    std::cout << "请输入正确信息" << std::endl;
-                    continue;
-                }
-            } while (parameter);
         }
-    }
+        default: {
+            std::cout << "请输入正确信息" << std::endl;
+            continue;
+        }
+        }
+    } while (letter != 'q' && letter != 'Q');
 }
 
 void test1_function() {
 
-    size_t parameter{1};
-
-    while (parameter) {
+    std::string user_input{};
+    std::string *input_ptr{&user_input};
+    do {
         int position{};
-        std::string user_input{};
-        std::cout << "Enter message: or 'q' exit ";
-        getline(std::cin, user_input);
+        std::cout << "输入信息：['q'/'Q']Exit ";
+        std::cin >> user_input;
         size_t str_length = user_input.length();
 
         if (user_input == "q" || user_input == "Q") {
             break;
-        }
-        for (auto s : user_input) {
-            std::cout << std::string(str_length - position, ' ');
+        } else {
+            for (auto s : *input_ptr) {
+                std::cout << std::string(str_length - position, ' ');
 
-            for (size_t i{}; i < position; ++i) {
-                std::cout << user_input.at(i);
-            }
-            std::cout << s;
+                for (size_t i{}; i < position; ++i) {
+                    std::cout << (*input_ptr).at(i);
+                }
+                std::cout << s;
 
-            for (int n{position - 1}; n >= 0; --n) {
-                auto k = static_cast<size_t>(n);
-                std::cout << user_input.at(n);
+                for (int n{position - 1}; n >= 0; --n) {
+                    auto k = static_cast<size_t>(n);
+                    std::cout << (*input_ptr).at(n);
+                }
+                std::cout << std::endl;
+                ++position;
             }
-            std::cout << std::endl;
-            ++position;
         }
-    }
+    } while (user_input != "q" && user_input != "Q");
 }
-void test2_function() {
-    const std::string line{
-        "==============================================================="};
-    unsigned verify{1};
 
-    while (verify == 1) {
-
-        std::vector<int> test_score{1, 3, 564, 65};
-        for (auto i : test_score)
-            std::cout << i << std::endl;
-
-        std::cout << "请输入4个测试成绩：";
-
-        for (int i{}; i < test_score.size(); ++i)
-            std::cin >> test_score.at(i);
-
-        std::cout << line << std::endl;
-        std::cout << "更新之后的结果: " << std::endl;
-        for (auto i : test_score)
-            std::cout << i << std::endl;
-
-        std::cout << "现在动态数组的长度是：" << test_score.size() << std::endl;
-        std::cout << line << std::endl;
-
-        std::cout << "请追加测试成绩：";
-        int score_to_add{};
-        std::cin >> score_to_add;
-        test_score.push_back(score_to_add);
-
-        std::cout << line << std::endl;
-        std::cout << "追加后的结果：" << std::endl;
-        for (auto i : test_score)
-            std::cout << i << std::endl;
-        std::cout << "更新之后动态数组的长度是：" << test_score.size()
-                  << std::endl;
-        std::cout << line << std::endl;
-
-        // std::vector<std::vector<int>> position{
-        //     {1, 4, 5, 3},
-        //     {5, 6, 7, 2},
-        //     {23, 4, 5, 3},
-        // };
-        // std::cout << "result:" << position.at(0).at(2) << std::endl;
-        // std::cout << "result:" << position.at(1).at(1) << std::endl;
-        // std::cout << "result:" << position.at(2).at(3) << std::endl;
-        // //
-        // std::cout << "请输入更改数字：" << std::endl;
-        // int num_to_add{};
-        // std::cin >> position.at(0).at(2);
-        // std::cout << line << std::endl;
-        //
-        // std::cout << "result:" << position.at(0).at(2) << std::endl;
-        // std::cout << "result:" << position.at(1).at(1) << std::endl;
-        // std::cout << "result:" << position.at(2).at(3) << std::endl;
-        // std::cout << line << std::endl;
-        std::cout << "是否继续：(y/n)";
-        char letter{};
-        std::cin >> letter;
-
-        switch (letter) {
-        case 'n':
-        case 'N':
-            --verify;
-            break;
-        }
-    }
-    char grade{};
-    unsigned parameter{1};
-
-    while (parameter == 1) {
-
-        std::cout << "Enter score(A~F) ar Enter 'q' exit: ";
-        std::cin >> grade;
-
-        switch (grade) {
-        case 'q':
-        case 'Q':
-            std::cout << "Program Stop" << std::endl;
-            --parameter;
-            break;
-        case 'A':
-            std::cout << "Between 90 and 100" << std::endl;
-            break;
-        case 'B':
-            std::cout << "Between 80 and 89" << std::endl;
-            break;
-        case 'C':
-            std::cout << "Between 70 and 79" << std::endl;
-            break;
-        case 'D':
-            std::cout << "Between 60 and 69" << std::endl;
-            break;
-        case 'E':
-            std::cout << "fail" << std::endl;
-            break;
-        default:
-            std::cout << "Hello world" << std::endl;
-        }
-
-        // int result{};
-        // int a{3};
-        // int b{84};
-        // result = (a < b) ? a : b;
-        // result = (a != 0) ? b / a : 0;
-        // result = (a > b) ? a - b : b - a;
-        while (parameter == 1) {
-
-            int num{};
-            std::cout << "Enter an interge: ";
-            std::cin >> num;
-
-            // if (num % 2 == 0)
-            //     std::cout << "num is even" << std::endl;
-            // else
-            //     std::cout << "num is odd" << std::endl;
-
-            std::cout << "num is " << ((num % 2 == 0) ? "even" : "odd")
-                      << std::endl;
-            std::cout << "Exit the Program? (y/n): ";
-            char letter{};
-            std::cin >> letter;
-            switch (letter) {
-            case 'n':
-            case 'N':
-                --parameter;
-                break;
-            }
-        }
-    }
-    // 输入一个值，打印范围内包含的偶数
-    int test{1};
-    while (test) {
-
-        int num{};
-        std::cout << "Enter a number: ";
-        std::cin >> num;
-
-        for (int parameter{}; parameter <= num; ++parameter)
-            if (parameter % 2 == 0)
-                std::cout << parameter << std::endl;
-
-        for (int i{1}; i <= 1000; ++i)
-            std::cout << i << ((i % 10 == 0) ? "\n" : " ");
-
-        std::cout << "Exit the program? (y/n)";
-        char letter{};
-        std::cin >> letter;
-        switch (letter) {
-        case 'y':
-        case 'Y':
-            --test;
-            break;
-        }
-    }
-}
 void vec_test() {
 
     static std::vector<double> array{};
