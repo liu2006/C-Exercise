@@ -66,7 +66,6 @@ void select_serve() {
                   << "4.数据金字塔" << std::endl
                   << "退出程序[q/Q]\n请输入：";
         std::cin >> command;
-        std::cin.ignore(256, '\n');
         switch (command) {
         case '1':
             fee_table();
@@ -169,7 +168,7 @@ void coding_tool() {
                 if (letter == "1") {
                     std::cout << "请输入需要加密的信息: ";
                     getline(std::cin, plaintext);
-                    if ((*plaintext_ptr).length() == 0) {
+                    if (plaintext.length() == 0) {
                         std::cout << "输入为空请重试" << std::endl;
                         continue;
                     } else {
@@ -180,9 +179,12 @@ void coding_tool() {
                             else
                                 *ciphertext_ptr += "#";
                         }
-                        std::cout << "加密成功" << std::endl
-                                  << "密钥是: \n"
-                                  << *ciphertext_ptr << std::endl;
+                        std::cout
+                            << "加密成功" << std::endl
+                            << "密钥是: \n"
+                            << *ciphertext_ptr << std::endl
+                            << "--------------------------------------------"
+                            << std::endl;
                     }
                     --parameter;
                     break;
@@ -190,8 +192,8 @@ void coding_tool() {
                 } else if (letter == "2") {
                     std::string decrypt_information{};
                     std::cout << "请输入需要解密的信息: ";
-                    getline(std::cin, *ciphertext_ptr);
-                    if ((*ciphertext_ptr).length() == 0) {
+                    getline(std::cin, ciphertext);
+                    if (ciphertext.length() == 0) {
                         std::cout << "输入为空请重试" << std::endl;
                         continue;
                     } else {
@@ -203,9 +205,12 @@ void coding_tool() {
                                 *plaintext_ptr += " ";
                             }
                         }
-                        std::cout << "解密成功" << std::endl
-                                  << "结果是: \n"
-                                  << *plaintext_ptr << std::endl;
+                        std::cout
+                            << "解密成功" << std::endl
+                            << "结果是: \n"
+                            << *plaintext_ptr << std::endl
+                            << "--------------------------------------------"
+                            << std::endl;
                     }
                     --parameter;
                     break;
