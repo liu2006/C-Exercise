@@ -1,17 +1,21 @@
 #include <iostream>
 #include <string>
 #include <vector>
-void total_fee_message(double big_room_fee = 35, double small_room_fee = 25);
+void total_fee_message(const double big_room_fee = 35,
+                       const double small_room_fee = 25);
 
-double cal_room_fee(size_t, size_t);
+void cal_total_fee(double *const, const double &, const double &,
+                   const double &);
+void cal_room_fee(double *const, const double *, const double);
 
-double room_fee_tax(double, double tax = 0.06);
+void room_fee_tax(double *const, const double &, const double &,
+                  const double tax = 0.06);
 
-void decrypt_information(const std::string *, const std::string *,
-                         const std::string *);
+void decrypt_information(const std::string *const, const std::string *const,
+                         const std::string *const);
 
-void encrypt_information(const std::string *, const std::string *,
-                         const std::string *);
+void encrypt_information(const std::string *const, const std::string *const,
+                         const std::string *const);
 void fee_table();
 
 void select_serve();
@@ -32,35 +36,61 @@ int main() {
     return 0;
 }
 
-double cal_room_fee(size_t room_num, size_t room_fee) {
-    return room_num * room_fee;
+void cal_total_fee(double *const total_fee_ptr, const double &big_fee,
+                   const double &small_fee, const double &tax_fee) {
+    *total_fee_ptr = big_fee + small_fee + tax_fee;
+}
+void cal_room_fee(double *const fee_ptr, const double *room_num,
+                  const double room_fee) {
+    *fee_ptr = *room_num * room_fee;
 }
 
-double room_fee_tax(double room_fee, double tax) { return room_fee * tax; }
+void room_fee_tax(double *const total_tax_ptr, const double &big_room_fee,
+                  const double &small_room_fee, const double tax) {
+    *total_tax_ptr = (big_room_fee + small_room_fee) * tax;
+}
 
-void total_fee_message(double big_room_fee, double small_room_fee) {
+void total_fee_message(const double big_room_fee, const double small_room_fee) {
+    double big_fee{};
+    double small_fee{};
+    double tax_fee{};
+    double total_fee{};
+
+    double *fee_ptr{nullptr};
+
+    const double *room_num_ptr{nullptr};
     const std::string str1{"-------------------------------------"};
 
     double big_room_num{};
     std::cout << "请输入大房间数量：";
     std::cin >> big_room_num;
+    room_num_ptr = &big_room_num;
+
+    fee_ptr = &big_fee;
+    cal_room_fee(fee_ptr, room_num_ptr, big_room_fee);
 
     double small_room_num{};
     std::cout << "请输入小房间数量：";
     std::cin >> small_room_num;
+    room_num_ptr = &small_room_num;
 
-    double big_fee = cal_room_fee(big_room_num, big_room_fee);
-    double small_fee = cal_room_fee(small_room_num, small_room_fee);
-    double total_tax = room_fee_tax(big_fee + small_fee);
-    double total_fee = big_fee + small_fee + total_tax;
+    fee_ptr = &small_fee;
+    cal_room_fee(fee_ptr, room_num_ptr, small_room_fee);
+
+    fee_ptr = &tax_fee;
+    room_fee_tax(fee_ptr, big_fee, small_fee);
+
+    fee_ptr = &total_fee;
+
+    cal_total_fee(fee_ptr, big_fee, small_fee, tax_fee);
     std::cout << str1 << "\n大房间清理费总计：" << big_fee << "\n"
               << "小房间清理费总计：" << small_fee << "\n"
-              << "总税率：" << total_tax << "\n总价：" << total_fee << "\n"
+              << "总税率：" << tax_fee << "\n总价：" << total_fee << "\n"
               << str1;
 }
 void select_serve() {
     char command{};
-    char *command_ptr{&command};
+    char *command_ptr{nullptr};
     do {
         std::cout << "---------------------------------------" << std::endl
                   << "请选择服务" << std::endl
@@ -72,6 +102,7 @@ void select_serve() {
                   << "---------------------------------------" << std::endl
                   << "Enter: ";
         std::cin >> command;
+        command_ptr = &command;
         switch (*command_ptr) {
         case '1':
             fee_table();
